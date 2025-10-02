@@ -1,6 +1,7 @@
 # 🌟 ChatGPT for Students - Prompt Showcase  
 **Author: Khushaank Gupta**
-**Site-copied : https://chatgpt.com/use-cases/students#
+
+**Site-copied : https://chatgpt.com/use-cases/students# **
 
 ---
 
