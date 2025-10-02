@@ -1,0 +1,1536 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Author: Khushaank Gupta -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ChatGPT for students</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      /* --- Base & Theme Styles --- */
+      html {
+        font-size: 16px; /* Base font size for REM calculations */
+      }
+      body {
+        font-family: "Inter", sans-serif;
+        transition: background-color 0.5s ease;
+      }
+      body.menu-open {
+        overflow: hidden; /* Prevent scrolling when menu is open */
+      }
+
+      :root {
+        --theme-color-all: #cdedef;
+        --theme-color-study: #d1d9ff;
+        --theme-color-career: #e3d1ff;
+        --theme-color-life: #d1ffdb;
+      }
+
+      .theme-all {
+        background-color: var(--theme-color-all);
+      }
+      .theme-study {
+        background-color: var(--theme-color-study);
+      }
+      .theme-career {
+        background-color: var(--theme-color-career);
+      }
+      .theme-life {
+        background-color: var(--theme-color-life);
+      }
+
+      /* --- Animations --- */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(1.25rem);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* --- Header & Navigation Styles --- */
+      #header {
+        transition: background-color 0.3s ease-in-out,
+          box-shadow 0.3s ease-in-out;
+      }
+
+      #header.scrolled {
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.05);
+      }
+      #header.scrolled.theme-all {
+        background-color: var(--theme-color-all);
+      }
+      #header.scrolled.theme-study {
+        background-color: var(--theme-color-study);
+      }
+      #header.scrolled.theme-career {
+        background-color: var(--theme-color-career);
+      }
+      #header.scrolled.theme-life {
+        background-color: var(--theme-color-life);
+      }
+
+      .dropdown-menu {
+        display: none;
+        opacity: 0;
+        transform: translateY(0.625rem);
+        transition: opacity 0.2s ease, transform 0.2s ease;
+        pointer-events: none;
+      }
+      .group:hover .dropdown-menu {
+        display: grid;
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+      }
+
+      /* --- Prompt Card Styles --- */
+      .prompt-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .prompt-card:hover {
+        transform: scale(1.03); /* Zoom effect on hover */
+        box-shadow: 0 0.5rem 1.5rem -0.3rem rgba(0, 0, 0, 0.1),
+          0 0.25rem 0.375rem -0.25rem rgba(0, 0, 0, 0.07);
+      }
+
+      .hover-arrow {
+        opacity: 0;
+        transform: scale(0.9);
+        transition: opacity 0.2s ease, transform 0.2s ease;
+      }
+      .prompt-card:hover .hover-arrow {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      /* --- Mobile Menu --- */
+      #mobile-menu {
+        transition: opacity 0.3s ease-in-out;
+      }
+
+      /* --- Cookie Modal --- */
+      .switch {
+        position: relative;
+        display: inline-block;
+        width: 2.125rem;
+        height: 1.25rem;
+      }
+      .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+      .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #555;
+        transition: 0.4s;
+        border-radius: 1.25rem;
+      }
+      .slider:before {
+        position: absolute;
+        content: "";
+        height: 1rem;
+        width: 1rem;
+        left: 0.125rem;
+        bottom: 0.125rem;
+        background-color: white;
+        transition: 0.4s;
+        border-radius: 50%;
+      }
+      input:checked + .slider {
+        background-color: #3b82f6;
+      }
+      input:checked + .slider:before {
+        transform: translateX(0.875rem);
+      }
+      input:disabled + .slider {
+        cursor: not-allowed;
+        background-color: #60a5fa;
+        opacity: 0.8;
+      }
+    </style>
+  </head>
+  <body class="theme-all">
+    <!-- Full-screen Mobile Menu -->
+    <div
+      id="mobile-menu"
+      class="fixed inset-0 z-40 p-4 opacity-0 pointer-events-none"
+    >
+      <nav
+        class="flex flex-col space-y-2 text-2xl font-semibold text-black pt-24"
+      >
+        <a href="#" class="p-3 rounded-md">About</a>
+        <a href="#" class="p-3 rounded-md">Features</a>
+        <a href="#" class="p-3 rounded-md">Learn</a>
+        <a href="#" class="p-3 rounded-md">For Business</a>
+        <a href="#" class="p-3 rounded-md">Pricing</a>
+        <a href="#" class="p-3 rounded-md">Download</a>
+      </nav>
+    </div>
+
+    <!-- Header -->
+    <header id="header" class="fixed top-0 left-0 right-0 z-50">
+      <nav
+        class="mx-auto flex max-w-screen-2xl items-center justify-between px-4 sm:px-8 py-3"
+      >
+        <a href="#" class="flex items-center space-x-2">
+          <svg
+            width="118"
+            height="28"
+            viewBox="0 0 118 28"
+            fill="currentColor"
+            xmlns="http://www.w3.org/2000/svg"
+            class="text-black h-7 w-auto"
+          >
+            <g clip-path="url(#clip0_1116_479)">
+              <path
+                d="M25.9489 10.854C26.5806 8.48721 25.968 5.85728 24.1111 4.0005C22.2544 2.14371 19.6244 1.53106 17.2576 2.16271C15.5236 0.432283 12.9397 -0.352139 10.4032 0.32755C7.86677 1.00724 6.02142 2.97849 5.38482 5.34396C3.01935 5.9804 1.0481 7.82591 0.368566 10.3624C-0.311124 12.8988 0.473299 15.4826 2.20372 17.2166C1.57208 19.5834 2.18473 22.2134 4.04152 24.0701C5.89829 25.927 8.52823 26.5396 10.8951 25.9079C12.6291 27.6384 15.213 28.4228 17.7493 27.7431C20.2857 27.0634 22.1311 25.0921 22.7677 22.7267C25.1333 22.0903 27.1046 20.2447 27.7841 17.7083C28.4638 15.1718 27.6794 12.5881 25.9489 10.854ZM16.3108 4.19745C18.4392 2.96691 21.208 3.2621 23.029 5.08306C24.3143 6.36844 24.8391 8.12667 24.6041 9.79791L18.6092 6.33677C18.3724 6.20006 18.0806 6.20006 17.8438 6.33677L10.8241 10.3897V7.66464C10.8241 7.48081 10.9226 7.30904 11.0817 7.21712L16.3107 4.1976L16.3108 4.19745ZM14.0764 10.2797L17.3288 12.1575V15.9131L14.0764 17.7909L10.8239 15.9131V12.1575L14.0764 10.2797ZM6.67376 7.18129C6.67221 4.72282 8.31227 2.47243 10.7998 1.80602C12.5555 1.3355 14.3406 1.76015 15.6705 2.7993L9.67567 6.26046C9.43886 6.39717 9.29303 6.64989 9.29303 6.92332V15.0291L6.93297 13.6665C6.77386 13.5745 6.67422 13.4032 6.67422 13.2196L6.67376 7.18144V7.18129ZM1.84704 10.7583C2.31757 9.00254 3.57778 7.66881 5.14261 7.0367V13.9588C5.14261 14.2323 5.28843 14.485 5.52524 14.6217L12.545 18.6747L10.1849 20.0373C10.0259 20.1292 9.82765 20.1298 9.66856 20.0379L4.43913 17.0193C2.30923 15.7914 1.18049 13.2458 1.84689 10.7585L1.84704 10.7583ZM11.8419 23.8732C9.71352 25.1038 6.94471 24.8085 5.12376 22.9876C3.83838 21.7022 3.31362 19.944 3.54858 18.2727L9.54344 21.7339C9.7802 21.8706 10.0721 21.8706 10.3089 21.7339L17.3286 17.6809V20.406C17.3286 20.5899 17.2301 20.7617 17.071 20.8535L11.842 23.8731L11.8419 23.8732ZM21.479 20.8894C21.4805 23.3479 19.8404 25.5983 17.3529 26.2646C15.5971 26.7352 13.812 26.3105 12.4822 25.2713L18.477 21.8102C18.7139 21.6735 18.8597 21.4207 18.8597 21.1473V13.0416L21.2198 14.4042C21.3788 14.4961 21.4785 14.6675 21.4785 14.8511L21.479 20.8892V20.8894ZM26.3055 17.3123C25.835 19.0681 24.5748 20.4018 23.0099 21.034V14.1118C23.0099 13.8384 22.8641 13.5857 22.6273 13.4489L15.6075 9.39599L17.9676 8.03337C18.1266 7.94146 18.3249 7.94083 18.484 8.03275L23.7134 11.0513C25.8434 12.2792 26.972 14.8249 26.3056 17.3122L26.3055 17.3123Z"
+              ></path>
+              <path
+                d="M41.9916 18.5672C39.4791 18.5672 37.7343 16.6644 37.7343 14.0346C37.7343 11.4048 39.4817 9.50202 41.9539 9.50202C43.7599 9.50202 45.1515 10.5618 45.5638 11.8565H48.3704C47.8806 9.03104 45.2315 6.9707 41.9141 6.9707C37.93 6.9707 35.0078 10.1306 35.0078 14.0346C35.0078 17.9386 37.852 21.0985 41.9351 21.0985C45.3095 21.0985 47.8995 19.078 48.4295 16.2127H45.6439C45.1729 17.5267 43.8002 18.5672 41.9942 18.5672H41.992H41.9916Z"
+              ></path>
+              <path
+                d="M55.3097 10.8956C54.0145 10.8956 52.9951 11.4654 52.4251 12.2494V7.16797H49.875V20.9027H52.4251V15.6233C52.4251 14.0927 53.2494 13.0921 54.5844 13.0921C55.8018 13.0921 56.4868 14.0341 56.4868 15.3476V20.9001H59.0369V14.9357C59.0369 12.5033 57.5465 10.8925 55.3097 10.8925V10.8947V10.8956Z"
+              ></path>
+              <path
+                d="M69.4973 14.5063C69.4973 12.2697 67.9666 10.8965 65.1411 10.8965C62.8264 10.8965 60.9802 12.1917 60.6672 14.0753H63.2387C63.434 13.4279 64.1405 12.9166 65.1227 12.9166C66.3991 12.9166 67.0067 13.5828 67.0067 14.7414V14.8001L64.5152 15.0168C61.9064 15.2335 60.4531 16.2931 60.4531 18.2944C60.4531 19.9827 61.9059 21.101 63.9264 21.101C65.2803 21.101 66.5944 20.571 67.1454 19.6881C67.1454 20.1188 67.1853 20.5123 67.2632 20.9054H69.6369C69.538 20.2768 69.5003 19.5515 69.5003 18.7085V14.5098L69.4977 14.5051L69.4973 14.5063ZM67.0036 16.8425C67.0036 18.0011 66.1396 19.1782 64.3948 19.1782C63.4528 19.1782 62.942 18.726 62.942 18.0598C62.942 17.3344 63.4318 16.8824 64.5314 16.7834L67.0036 16.5667V16.842V16.8425Z"
+              ></path>
+              <path
+                d="M74.8572 7.91406H72.3071V11.0927H70.2656V13.1532H72.3071V17.9802C72.3071 19.8453 73.2679 20.9047 75.3283 20.9047H77.3698V18.7856H76.0746C75.2105 18.7856 74.8572 18.4915 74.8572 17.6861V13.1535H77.3698V11.0932H74.8572V7.91449V7.91406Z"
+              ></path>
+              <path
+                d="M90.0387 13.5641H85.6422V15.7609H89.3908C89.1344 17.5858 87.4268 18.6854 85.5245 18.6854C82.7765 18.6854 81.1684 16.6648 81.1684 14.035C81.1684 11.4053 82.9744 9.4832 85.4444 9.4832C87.1327 9.4832 88.508 10.465 88.8608 11.5624H91.6653C91.1352 8.83581 88.6231 6.9707 85.4063 6.9707C81.4432 6.9707 78.5 10.1682 78.5 14.0534C78.5 17.9386 81.2081 21.0985 85.2509 21.0985C87.0968 21.0985 88.764 20.2743 89.5082 19.1559V20.9033H91.7852V15.311C91.7852 14.1926 91.1588 13.5636 90.0382 13.5636L90.0387 13.5641Z"
+              ></path>
+              <path
+                d="M99.8947 7.16841H93.8125V20.9031H96.4003V15.7416H99.9132C102.624 15.7416 104.545 14.1522 104.545 11.4843C104.545 8.81642 102.624 7.16797 99.8947 7.16797V7.16841ZM99.7178 13.4671H96.4003V9.52289H99.7178C101.054 9.52289 101.917 10.2881 101.917 11.4843C101.917 12.6806 101.054 13.4668 99.7178 13.4668V13.4671Z"
+              ></path>
+              <path
+                d="M105.189 7.16797V9.52246H109.88V20.9027H112.468V9.52246H117.178V7.16797H105.188H105.19H105.189Z"
+              ></path>
+            </g>
+            <defs>
+              <clipPath id="clip0_1116_479">
+                <rect width="117.347" height="28" fill="white"></rect>
+              </clipPath>
+            </defs>
+          </svg>
+        </a>
+        <div
+          class="hidden md:flex items-center space-x-0 lg:space-x-1 text-sm font-medium"
+        >
+          <a
+            href="#"
+            class="text-gray-700 hover:text-black px-3 py-2 rounded-lg"
+            >About</a
+          >
+          <div class="relative group">
+            <button
+              class="text-gray-700 hover:text-black px-3 py-2 rounded-lg flex items-center"
+            >
+              Features
+            </button>
+            <div
+              class="dropdown-menu absolute mt-1 w-48 rounded-lg shadow-lg bg-white/90 backdrop-blur-sm ring-1 ring-black ring-opacity-5 p-2 space-y-1"
+            >
+              <a
+                href="#"
+                class="block px-4 py-2 text-sm text-gray-700 rounded-md hover:bg-gray-100"
+                >Agent</a
+              >
+              <a
+                href="#"
+                class="block px-4 py-2 text-sm text-gray-700 rounded-md hover:bg-gray-100"
+                >ChatGPT in WhatsApp</a
+              >
+            </div>
+          </div>
+          <div class="relative group">
+            <button
+              class="text-gray-700 hover:text-black px-3 py-2 rounded-lg flex items-center"
+            >
+              Learn
+            </button>
+            <div
+              class="dropdown-menu absolute mt-1 w-max rounded-lg shadow-lg bg-white/90 backdrop-blur-sm ring-1 ring-black ring-opacity-5 p-4 grid-cols-3 gap-x-1"
+            >
+              <div class="border-r border-gray-200 pr-4">
+                <h3
+                  class="px-2 font-semibold text-gray-500 text-xs tracking-wider uppercase mb-2"
+                >
+                  ChatGPT for
+                </h3>
+                <a
+                  href="#"
+                  class="block px-2 py-1.5 text-sm text-gray-700 rounded-md hover:bg-gray-100"
+                  >Students</a
+                >
+                <a
+                  href="#"
+                  class="block px-2 py-1.5 text-sm text-gray-700 rounded-md hover:bg-gray-100"
+                  >University Educators</a
+                >
+              </div>
+              <div class="border-r border-gray-200 px-4">
+                <h3
+                  class="px-2 font-semibold text-gray-500 text-xs tracking-wider uppercase mb-2"
+                >
+                  Inspiration
+                </h3>
+                <a
+                  href="#"
+                  class="block px-2 py-1.5 text-sm text-gray-700 rounded-md hover:bg-gray-100"
+                  >Image Creation</a
+                >
+              </div>
+              <div class="pl-4">
+                <h3
+                  class="px-2 font-semibold text-gray-500 text-xs tracking-wider uppercase mb-2"
+                >
+                  Ways to Use
+                </h3>
+                <a
+                  href="#"
+                  class="block px-2 py-1.5 text-sm text-gray-700 rounded-md hover:bg-gray-100"
+                  >Chat with PDFs</a
+                >
+              </div>
+            </div>
+          </div>
+          <div class="relative group">
+            <button
+              class="text-gray-700 hover:text-black px-3 py-2 rounded-lg flex items-center"
+            >
+              For Business
+            </button>
+            <div
+              class="dropdown-menu absolute mt-1 w-max rounded-lg shadow-lg bg-white/90 backdrop-blur-sm ring-1 ring-black ring-opacity-5 p-4 grid-cols-1 md:grid-cols-3 gap-x-1"
+            >
+              <div class="border-r border-gray-200 pr-4">
+                <h3
+                  class="px-2 font-semibold text-gray-500 text-xs tracking-wider uppercase mb-2"
+                >
+                  Business
+                </h3>
+                <a
+                  href="#"
+                  class="block px-2 py-1.5 text-sm text-gray-700 rounded-md hover:bg-gray-100"
+                  >Overview</a
+                >
+              </div>
+              <div class="border-r border-gray-200 px-4">
+                <h3
+                  class="px-2 font-semibold text-gray-500 text-xs tracking-wider uppercase mb-2"
+                >
+                  AI solutions for
+                </h3>
+                <a
+                  href="#"
+                  class="block px-2 py-1.5 text-sm text-gray-700 rounded-md hover:bg-gray-100"
+                  >Engineering</a
+                >
+              </div>
+              <div class="pl-4">
+                <h3
+                  class="px-2 font-semibold text-gray-500 text-xs tracking-wider uppercase mb-2"
+                >
+                  Plans
+                </h3>
+                <a
+                  href="#"
+                  class="block px-2 py-1.5 text-sm text-gray-700 rounded-md hover:bg-gray-100"
+                  >Business</a
+                >
+              </div>
+            </div>
+          </div>
+          <a
+            href="#"
+            class="text-gray-700 hover:text-black px-3 py-2 rounded-lg"
+            >Pricing</a
+          >
+          <a
+            href="#"
+            class="text-gray-700 hover:text-black px-3 py-2 rounded-lg"
+            >Download</a
+          >
+        </div>
+        <div class="flex items-center space-x-4">
+          <a
+            href="#"
+            class="bg-black text-white px-5 py-2 rounded-full text-sm font-medium hidden sm:block"
+            >Try ChatGPT</a
+          >
+          <button
+            id="hamburger-btn"
+            class="md:hidden w-10 h-10 rounded-full bg-white border border-gray-300 flex items-center justify-center"
+            aria-label="Open menu"
+          >
+            <svg
+              id="hamburger-icon"
+              class="w-6 h-6 text-black"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 6h16M4 12h16m-7 6h7"
+              />
+            </svg>
+            <svg
+              id="close-icon"
+              class="w-6 h-6 text-black hidden"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
+      </nav>
+    </header>
+
+    <main class="pt-24">
+      <section
+        class="relative text-center pt-12 pb-20 sm:pt-20 sm:pb-28 overflow-hidden"
+      >
+        <div class="relative mx-auto max-w-2xl px-4 z-10">
+          <h1
+            class="text-4xl sm:text-5xl md:text-6xl font-bold text-black leading-tight"
+          >
+            100 chats for <br class="sm:hidden" />college students
+          </h1>
+          <p class="mt-4 text-lg text-gray-700">
+            These chats were made by students, for students. Learn new things,
+            start a career, and navigate life more confidently.
+          </p>
+          <p class="mt-2 text-gray-600">Tap a chat to get started.</p>
+        </div>
+        <div
+          id="hero-images-container"
+          class="absolute inset-0 z-0 flex justify-between items-center px-4 sm:px-10"
+        >
+          <img
+            id="hero-img-left"
+            src="images/all_1.png"
+            alt="Illustration"
+            class="w-1/3 sm:w-1/4 max-w-xs transition-opacity duration-500 ease-in-out"
+          />
+          <img
+            id="hero-img-right"
+            src="images/all_2.png"
+            alt="Illustration"
+            class="w-1/3 sm:w-1/4 max-w-xs transition-opacity duration-500 ease-in-out"
+          />
+        </div>
+      </section>
+
+      <!-- Sticky Filter Tabs -->
+      <div class="sticky top-[4.375rem] z-30 flex justify-center mb-12">
+        <div
+          class="bg-white/80 backdrop-blur-sm p-1 rounded-full shadow-lg flex space-x-1"
+        >
+          <a
+            href="#all"
+            data-category="all"
+            class="tab-btn active bg-gray-200 text-black px-4 py-2 rounded-full text-sm font-medium"
+          >
+            All
+          </a>
+          <a
+            href="#study"
+            data-category="study"
+            class="tab-btn text-gray-600 px-4 py-2 rounded-full text-sm font-medium"
+          >
+            Study
+          </a>
+          <a
+            href="#career"
+            data-category="career"
+            class="tab-btn text-gray-600 px-4 py-2 rounded-full text-sm font-medium"
+          >
+            Career
+          </a>
+          <a
+            href="#life"
+            data-category="life"
+            class="tab-btn text-gray-600 px-4 py-2 rounded-full text-sm font-medium"
+          >
+            Life
+          </a>
+        </div>
+      </div>
+
+      <!-- Masonry-style Grid Container -->
+      <div
+        id="prompts-container"
+        class="max-w-screen-xl mx-auto px-4 sm:px-8 flex flex-col sm:flex-row gap-4 sm:gap-6"
+      >
+        <div id="col-1" class="flex-1 flex flex-col gap-4 sm:gap-6"></div>
+        <div
+          id="col-2"
+          class="flex-1 flex flex-col gap-4 sm:gap-6 hidden md:flex"
+        ></div>
+        <div
+          id="col-3"
+          class="flex-1 flex flex-col gap-4 sm:gap-6 hidden lg:flex"
+        ></div>
+      </div>
+    </main>
+
+    <footer
+      id="footer"
+      class="mt-20 py-10 text-center transition-colors duration-500"
+    >
+      <div class="max-w-3xl mx-auto px-4">
+        <img
+          id="footer-image"
+          src="images/all_3.png"
+          alt="Footer Illustration"
+          class="mx-auto w-4/5 max-w-xs mb-6 transition-opacity duration-500 ease-in-out"
+        />
+        <p class="text-sm text-gray-600">
+          More than 70 college students across North America created and ranked
+          these chats in our ChatGPT Lab.<br />Some chats were also provided by
+          content creators on social media.
+        </p>
+        <a
+          href="#"
+          id="manage-cookies-link"
+          class="mt-4 inline-block text-sm text-gray-500 underline"
+          >Manage cookies</a
+        >
+      </div>
+    </footer>
+
+    <!-- Cookie Modal -->
+    <div
+      id="cookie-overlay"
+      class="fixed inset-0 bg-gray-900 bg-opacity-60 z-[70] hidden transition-opacity duration-300"
+    ></div>
+    <div
+      id="cookie-modal"
+      class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-[#2d2d2d] text-white rounded-xl shadow-2xl p-6 z-[80] hidden transition-all duration-300 scale-95 opacity-0"
+    >
+      <div class="flex justify-between items-start">
+        <h2 class="text-xl font-semibold">Manage cookies</h2>
+        <button
+          id="close-cookie-btn"
+          class="text-gray-400 hover:text-white p-1 rounded-full hover:bg-gray-700"
+        >
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            ></path>
+          </svg>
+        </button>
+      </div>
+      <p class="text-sm text-gray-300 mt-2">
+        OpenAI uses cookies to improve your experience and analyze site traffic.
+        For more information, read our
+        <a href="#" class="underline hover:text-white">cookie policy</a>.
+      </p>
+      <div class="mt-6 space-y-4">
+        <div class="flex justify-between items-center py-2">
+          <div>
+            <h3 class="font-semibold">Essential</h3>
+            <p class="text-sm text-gray-400 max-w-xs">
+              These cookies are required to operate our Services. For example,
+              they allow us to authenticate users or enable specific features
+              within the Services, including for security purposes.
+            </p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" checked disabled />
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="flex justify-between items-center py-2">
+          <div>
+            <h3 class="font-semibold">Analytics</h3>
+            <p class="text-sm text-gray-400 max-w-xs">
+              These cookies help us analyze and understand how our Services
+              perform and are used, such as the number of users, how they
+              interact with our Services, and time spent using the Services.
+            </p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" checked />
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+      <div class="mt-6 flex justify-end space-x-3">
+        <button
+          id="reject-cookies-btn"
+          class="px-4 py-2 rounded-lg bg-gray-600 hover:bg-gray-500 text-sm font-medium transition-colors"
+        >
+          Reject all
+        </button>
+        <button
+          id="accept-cookies-btn"
+          class="px-4 py-2 rounded-lg bg-gray-400 hover:bg-gray-300 text-black text-sm font-medium transition-colors"
+        >
+          Accept all
+        </button>
+      </div>
+    </div>
+
+    <script>
+      // --- DATA ---
+      // This is a list of all 100 prompt cards.
+      const prompts = [
+        // Study Prompts
+        {
+          category: "study",
+          title: "Pre-grade your essay",
+          description:
+            "Act as my professor and grade my assignment according to the rubric.",
+          attachments: ["Rubric.pdf", "First Draft.docx"],
+        },
+        {
+          category: "study",
+          title: "Talk through your notes",
+          description:
+            "I'll go through my slides on RNA interference one by one...",
+          attachments: ["Lecture slides.ppt"],
+        },
+        {
+          category: "study",
+          title: "Learn by being interviewed",
+          description: "Guide me by asking open-ended questions...",
+          attachments: ["Lecture slides.ppt"],
+        },
+        {
+          category: "study",
+          title: "Match your mood",
+          description:
+            "I'm feeling super unmotivated... Help me understand my physics lecture.",
+          attachments: ["Physics Notes.docx"],
+        },
+        {
+          category: "study",
+          title: "Make studying a game",
+          description:
+            "I am struggling to understand the case studies from my International Relations course...",
+          attachments: ["Case studies.pdf"],
+        },
+        {
+          category: "study",
+          title: "Better understand a lecture",
+          description:
+            "This lecture is sooooo boring. Help me learn the content in a faster way.",
+          attachments: ["Lecture slides.ppt"],
+        },
+        {
+          category: "study",
+          title: "Learn concepts as stories",
+          description:
+            "Turn the transition from Hot House Earth to Icehouse Earth into a time-travel adventure story.",
+        },
+        {
+          category: "study",
+          title: "Test yourself by spotting errors",
+          description:
+            "Write grammatically incorrect sentences in intermediate French, and I will try to fix them.",
+        },
+        {
+          category: "study",
+          title: "Plan your essay",
+          description:
+            "I've only ever written a traditional five-paragraph essay. How can I approach writing a 15-page paper?",
+        },
+        {
+          category: "study",
+          title: "Format citations quickly",
+          description:
+            "Please cite this website for me in APA format: https://en.wikipedia.org/wiki/Logic",
+        },
+        {
+          category: "study",
+          title: "Practice discussing hard topics",
+          description:
+            "I want to become better at international development and public policy. Let's do simulation exercises so that I can practice.",
+        },
+        {
+          category: "study",
+          title: "Decode a tough passage of text",
+          description:
+            "Translate this part that says 'confined their employments' into language I can understand.",
+          attachments: ["Photo of the page"],
+        },
+        {
+          category: "study",
+          title: "Simplify a confusing topic",
+          description:
+            "Explain quantum physics to me in 3 different levels of understanding from elementary school level to college level.",
+        },
+        {
+          category: "study",
+          title: "Speed up your research",
+          description:
+            "Provide a comprehensive list of articles from top-tier peer-reviewed journals on the impact of optimism bias...",
+        },
+        {
+          category: "study",
+          title: "Make a study guide",
+          description: "Make me a study guide for my Psych 101 midterm.",
+          attachments: ["Class notes.pdf", "Readings.pdf", "Syllabus.pdf"],
+        },
+        {
+          category: "study",
+          title: "Create a study schedule",
+          description:
+            "Create a study schedule for me using spaced repetition... I have 2 hours before my exam.",
+          attachments: ["Class notes.pdf", "Lecture slides.pdf"],
+        },
+        {
+          category: "study",
+          title: "Clean up your notes",
+          description:
+            "Can you clean up these notes and define key terms and concepts?",
+          attachments: ["Notes.pdf"],
+        },
+        {
+          category: "study",
+          title: "Visualize a concept",
+          description:
+            "Please create an image to help me visualize the 3D molecular structure for benzene.",
+        },
+        {
+          category: "study",
+          title: "Make a checklist for each assignment",
+          description:
+            "Look for any rules and requirements in this assignment and make a checklist...",
+          attachments: ["Assignment.pdf"],
+        },
+        {
+          category: "study",
+          title: "Learn from expert perspectives",
+          description:
+            "I am writing about remote work and want to consider multiple perspectives. List the perspectives from an actual expert in... health, financial, and relationships.",
+        },
+        {
+          category: "study",
+          title: "Practice public speaking",
+          description:
+            "I want to practice my final presentation for my Sleep and Dreams course. Act as my public speaking coach...",
+        },
+        {
+          category: "study",
+          title: "Get motivated",
+          description:
+            "I'm studying Maternal-Newborn Nursing and have a test next week. Motivate me.",
+        },
+        {
+          category: "study",
+          title: "Get up to speed quickly",
+          description:
+            "I want to learn about deep learning neural networks. Identify and share the most important 20% of learnings from this topic...",
+        },
+        {
+          category: "study",
+          title: "Get more out of your reading",
+          description:
+            "Create a reading plan for The Tale of Genji with key ideas and things to pay attention to...",
+          attachments: ["Tale of Genji.pdf"],
+        },
+        {
+          category: "study",
+          title: "Learn through analogies",
+          description:
+            "I want to understand epigenetics (and how it impacts the way we age). Explain it with an analogy to real-world items.",
+        },
+        {
+          category: "study",
+          title: "Stay on track with your project",
+          description:
+            "Act as my research advisor and assistant. Here are the documents for my project so far...",
+          attachments: ["Project plan.pdf", "Draft.pdf"],
+        },
+        {
+          category: "study",
+          title: "Find the right word",
+          description:
+            "What are better options than 'sophisticated'? I want something that feels more natural.",
+        },
+        {
+          category: "study",
+          title: "Challenge your thinking",
+          description:
+            "I want to pressure-test this thesis before I keep writing. Suggest the existing opposing viewpoints and any flaws in my logic.",
+          attachments: ["Thesis statement.pdf"],
+        },
+        {
+          category: "study",
+          title: "Learn by teaching",
+          description:
+            "I'm studying Behavioral Biology. Ask me questions like a classmate I'm explaining the concept to.",
+        },
+        {
+          category: "study",
+          title: "Make flashcards faster",
+          description: "Turn this into flashcard-style questions and answers.",
+          attachments: ["Class notes.pdf"],
+        },
+        {
+          category: "study",
+          title: "Fix procrastination",
+          description:
+            "Give me a step-by-step guide to help me finish my final paper on symbolism and themes in Gabriel García Márquez's One Hundred Years of Solitude...",
+        },
+        {
+          category: "study",
+          title: "Create a quiz instantly",
+          description:
+            "I have an upcoming exam for my advertising class. Create a practice quiz for me based on the material...",
+          attachments: ["Lecture slides.ppt"],
+        },
+        // Career Prompts
+        {
+          category: "career",
+          title: "Explore job options",
+          description:
+            "Based on what you already know about me, what should I do for my career? Make a comprehensive assessment of my strengths and passions...",
+        },
+        {
+          category: "career",
+          title: "Find your superpower",
+          description:
+            "Ask me 10 questions about what I enjoy, excel at, or find meaningful. Then suggest five domains where my strengths might lie.",
+        },
+        {
+          category: "career",
+          title: "Find the right mentor",
+          description:
+            "I am looking for a first reader for my cognitive science thesis research at UC Berkeley. Who from this list would be the best fit?",
+          attachments: ["Thesis topic.pdf", "Faculty.pdf"],
+        },
+        {
+          category: "career",
+          title: "Tailor your cover letter",
+          description:
+            "I want to write a cover letter. Use the structure, style, and voice of my past cover letters...",
+          attachments: ["Cover Letter.pdf", "Job description.pdf"],
+        },
+        {
+          category: "career",
+          title: "Get interview scenarios",
+          description:
+            "Show me sample questions and good answers for this back-end infrastructure interview.",
+          attachments: ["Interview overview.pdf"],
+        },
+        {
+          category: "career",
+          title: "Prepare for a negotiation",
+          description:
+            "What's the average salary range for Social Media Assistant in Austin? Also, give me tips and go-to phrases for negotiating...",
+        },
+        {
+          category: "career",
+          title: "Make sense of tough feedback",
+          description:
+            "How might I reframe this negative feedback into opportunities for growth?",
+          attachments: ["Peer review.pdf"],
+        },
+        {
+          category: "career",
+          title: "Connect courses to careers",
+          description:
+            "I need some help thinking through how what I'm studying relates to my career goals. Can we have an open discussion...?",
+        },
+        {
+          category: "career",
+          title: "Expand your job search",
+          description:
+            "I am looking for a new job and want to expand the titles I am searching for. First, think about the skills that I have from my resume...",
+          attachments: ["Resume.pdf"],
+        },
+        {
+          category: "career",
+          title: "Communicate your skills",
+          description:
+            "Based on what you know about me, list any technical or soft skills that I should add to my resume.",
+        },
+        {
+          category: "career",
+          title: "Generate interview questions",
+          description:
+            "I am about to interview for the attached job description. Can you create a list of questions that I'm likely to be asked?",
+          attachments: ["Job description.pdf"],
+        },
+        {
+          category: "career",
+          title: "Practice your interview aloud",
+          description:
+            "Start a mock interview for a Business Analyst position. I'll be interviewing with an Associate. Please rate my answers...",
+        },
+        {
+          category: "career",
+          title: "Make a plan to get hired",
+          description:
+            "Create a step-by-step strategy to help me land a software engineering internship at Surfline. Give the strategy in milestone format...",
+        },
+        {
+          category: "career",
+          title: "Compare resume to job posting",
+          description:
+            "Can you compare and contrast my resume with the job listing? Tell me the fit as a percentage.",
+          attachments: ["Resume.pdf", "Job listing.pdf"],
+        },
+        {
+          category: "career",
+          title: "Get a candid assessment",
+          description:
+            "Based on what you know about me, give me an honest breakdown of what skills I'm missing.",
+        },
+        {
+          category: "career",
+          title: "Quantify your impact",
+          description:
+            "List 5 relevant metrics that will help me quantify the impact of this project.",
+          attachments: ["Project description.pdf"],
+        },
+        {
+          category: "career",
+          title: "Shape an interview story",
+          description:
+            "I need help preparing for my upcoming interview for a Design Lead role. Please help me shape my story into a clear, compelling response...",
+        },
+        {
+          category: "career",
+          title: "Build rapport with interviewer",
+          description:
+            "I have an interview with Ada Lovelace. Attached is their resume. Given my profile, what could be some good topics to build rapport?",
+          attachments: ["Interviewer's Resume.pdf", "My Resume.pdf"],
+        },
+        {
+          category: "career",
+          title: "Prepare for a new job",
+          description:
+            "I will be working as a SDE Intern this summer. Based on your knowledge... give me any tips on how to succeed.",
+        },
+        // Life Prompts
+        {
+          category: "life",
+          title: "Build a training plan",
+          description:
+            "Help me create a training plan for 3 days a week with a focus on glutes.",
+        },
+        {
+          category: "life",
+          title: "Understand a lease",
+          description:
+            "Can you read this lease agreement and tell me if I can paint the walls in my apartment or hang things on them?*",
+          attachments: ["Apartment lease.pdf"],
+        },
+        {
+          category: "life",
+          title: "Get recipes, then customize",
+          description: "Help me make an iced matcha latte!",
+        },
+        {
+          category: "life",
+          title: "Make a real meal plan",
+          description:
+            "Can you come up with healthy meals that align with my fitness goals? I have a goal to lose weight this month...",
+        },
+        {
+          category: "life",
+          title: "Plan a group dinner",
+          description:
+            "Help me pick a Cuban restaurant in Miami. I am planning a dinner for a group of 10-15 people, with a budget of $30 per person...",
+        },
+        {
+          category: "life",
+          title: "Brainstorm better gift ideas",
+          description:
+            "What would be a good gift for my roommate who loves basketball? I have a budget of $35. Help me brainstorm a cool gift.",
+        },
+        {
+          category: "life",
+          title: "Get journaling prompts",
+          description: "Give me journaling prompts for managing anxiety.",
+        },
+        {
+          category: "life",
+          title: "Find a high-impact habit",
+          description:
+            "Based on what you know about me, could you suggest one small meaningful habit for me to add to my daily routine?",
+        },
+        {
+          category: "life",
+          title: "Get clarity on your goals",
+          description:
+            "Based on what you know about me, what do you think are my true goals in life? What am I doing that I can deprioritize?",
+        },
+        {
+          category: "life",
+          title: "Get project instructions",
+          description:
+            "I want to make this dress from scratch. Here's a photo. What is the best fabric to use to get the same look?",
+          attachments: ["Photo of dress"],
+        },
+        {
+          category: "life",
+          title: "Create images for any project",
+          description:
+            "I am making a magazine for my friend's birthday themed around fashion, hair, Paris, and New York. Make me a background page...",
+        },
+        {
+          category: "life",
+          title: "Find a good place to work",
+          description:
+            "What are the best cafés for getting work done in the Bellevue/Seattle area? I prioritize: late closing hours, free wifi, and good vibes!",
+        },
+        {
+          category: "life",
+          title: "Convert travel ideas into a trip",
+          description:
+            "These are some ideas I have for my trip to NYC. I'm going to be there Sunday at noon to Wednesday at noon. Can you help me plan an itinerary?",
+          attachments: ["NYC recs.txt"],
+        },
+        {
+          category: "life",
+          title: "Make a simpler packing list",
+          description:
+            "Give me a minimal list of what to pack. I'm traveling to Central, Hong Kong for a 7-week internship...",
+        },
+        {
+          category: "life",
+          title: "Practice language out loud",
+          description:
+            "I want to practice basic phrases in Italian. Please say a phrase, let me repeat it, and then give me feedback on pronunciation.",
+        },
+        {
+          category: "life",
+          title: "Balance a busy schedule",
+          description:
+            "I have a 30 hour per week internship, a 10 hour per week research lab... Can you write me a schedule to manage my time and include ways to de-stress?",
+          attachments: ["Weekly schedule.pdf"],
+        },
+        {
+          category: "life",
+          title: "Turn ideas into action",
+          description:
+            "Build me a 4-week plan to start integrating the principles of Meditations by Marcus Aurelius.",
+        },
+        {
+          category: "life",
+          title: "Care for your plant or pet",
+          description: "My hamster just had babies. What do I do now?",
+        },
+        {
+          category: "life",
+          title: "Brainstorm new project ideas",
+          description:
+            "I've been learning Python. Give me some creative projects to try. I'm really interested in finance...",
+        },
+        {
+          category: "life",
+          title: "Get instant app support",
+          description:
+            "I'm using lightroom. How would I soften the top right vignette in this picture?",
+          attachments: ["Photo"],
+        },
+        {
+          category: "life",
+          title: "Decide where to travel",
+          description:
+            "Give me the pros and cons of visiting San Juan vs. visiting Cartagena for college spring break.",
+        },
+        {
+          category: "life",
+          title: "Visit a city in one day",
+          description:
+            "I only have a limited amount of time in Montevideo. What should I do? I am doing a day trip out there from Buenos Aires...",
+        },
+        {
+          category: "life",
+          title: "Get help reading the menu",
+          description:
+            "What should I order from here? I'm in Chile, am vegetarian, and want to try something new.",
+          attachments: ["Photo of the menu"],
+        },
+        {
+          category: "life",
+          title: "Translate signs",
+          description: "What does this sign say? Does it have soap already?",
+          attachments: ["Photo of Japanese washing machine"],
+        },
+        {
+          category: "life",
+          title: "Understand slang",
+          description:
+            "My friend said I'm a 'full-sender.' What does that mean?",
+        },
+        {
+          category: "life",
+          title: "Get help with a hard decision",
+          description:
+            "I don't know what to choose: join an ongoing bio research project in a lab at UNC for fall-term, or ask a professor about pursuing some of my own research? Make a table with all the different things to consider.",
+        },
+        {
+          category: "life",
+          title: "Brain dump your thoughts",
+          description:
+            "I'm going to brain dump what's on my mind. Can you help me organize my thoughts?",
+        },
+        {
+          category: "life",
+          title: "Compare your workout options",
+          description:
+            "Is it better to do stairmaster or incline walk? I have 10 minutes overall and I care about muscle growth more than cardio.",
+        },
+        {
+          category: "life",
+          title: "Pre-game the dining hall menu",
+          description:
+            "I have uploaded my Duke dining hall menus. Create a meal plan for breakfast, lunch, and dinner that focuses on healthy food options...",
+          attachments: ["Menus.pdf"],
+        },
+        {
+          category: "life",
+          title: "Get college cooking advice",
+          description:
+            "What are some healthy recipes I can make in a dorm room with a microwave and a small refrigerator?",
+        },
+        {
+          category: "life",
+          title: "Get a second opinion as you cook",
+          description: "Do these look done?",
+          attachments: ["Photo of cookies in the oven"],
+        },
+        {
+          category: "life",
+          title: "Get conversation starters",
+          description:
+            "I want some fun icebreakers for my Frosh101 class where we help freshmen adapt to campus life. Help me come up with something playful.",
+        },
+        {
+          category: "life",
+          title: "Get accurate suggestions",
+          description:
+            "Find 10 songs that were popular in Kashmir in the 1970s that are like ghazal music...",
+        },
+        {
+          category: "life",
+          title: "Analyze your daily run",
+          description:
+            "Analyze this long run. What's going well, and what's missing?",
+          attachments: ["Running data.pdf"],
+        },
+        {
+          category: "life",
+          title: "Make a better grocery list",
+          description:
+            "Make me a meal plan and grocery list, keeping it under $150 for two weeks' worth of groceries. I'm a beginner cook...",
+        },
+        {
+          category: "life",
+          title: "Re-create a favorite dish",
+          description:
+            "I want to re-create a Cheesecake Honeybar at home... Please create a full recipe with ingredients and detailed instructions.",
+        },
+        {
+          category: "life",
+          title: "Check for allergens",
+          description:
+            "Does this ingredient list have any of these allergens? My friend is allergic to peanuts, tree nuts, and eggs.*",
+          attachments: ["Photo of ingredients"],
+        },
+        {
+          category: "life",
+          title: "Build a mystery game",
+          description:
+            "I want to create a mystery game for my frat brothers. Can you make us the suspects pretending like it's our formal? Ask me questions in order to design it.",
+        },
+        {
+          category: "life",
+          title: "Have a difficult conversation",
+          description:
+            "I need to have a conversation with my friend about our relationship. He said he wants to DTR. How should I approach it?",
+        },
+        {
+          category: "life",
+          title: "Make new habits stick",
+          description:
+            "What are micro-habits I can try to cultivate to support better sleep?",
+        },
+        {
+          category: "life",
+          title: "Reset your focus",
+          description:
+            "I have 10 minutes before my next meeting. Suggest some breathing exercises or physical stretches to improve my concentration and reduce stress...",
+        },
+        {
+          category: "life",
+          title: "Start a new hobby",
+          description:
+            "I'm a beginner at biking. I'll largely be on roads or gravel paths. What do I need to get started?",
+        },
+        {
+          category: "life",
+          title: "Make a visual prototype",
+          description:
+            "Make me an image of 8 kuchipudi dancers each with different poses that depict some sort of story (Ramayana, Mahabharata, or any older Indian stories).",
+        },
+        {
+          category: "life",
+          title: "Host a fundraising event",
+          description:
+            "I need help coming up with fundraiser ideas for my a cappella team, maybe around a South Asian holiday? Give me your best ideas!",
+        },
+        {
+          category: "life",
+          title: "Get a personalized travel plan",
+          description:
+            "What's the best way to get from Barcelona to Málaga for 5 people? We want to check out Barcelona for a bit...",
+        },
+        {
+          category: "life",
+          title: "Budget your group trip",
+          description:
+            "Can you budget my trip to Houston for a group of 7 people and tell us how much each person will need to bring?",
+          attachments: ["Itinerary.pdf"],
+        },
+        {
+          category: "life",
+          title: "Order food in a new language",
+          description:
+            "I'm trying to order tofu soup in Korean. Can you translate it and explain the pronunciation? Give me other helpful phrases...",
+        },
+        {
+          category: "life",
+          title: "Make ideas more understandable",
+          description:
+            "I'm trying to describe quinceañeras to someone who grew up in England. Can you help me explain it in a way they'll understand?",
+        },
+        {
+          category: "life",
+          title: "Manage your time better",
+          description:
+            "Can you write me a schedule to manage my time and avoid stress? Here's my current weekly schedule...",
+          attachments: ["Weekly schedule.pdf"],
+        },
+      ];
+
+      // --- DOM ELEMENTS ---
+      // This section gets references to all the HTML elements the script will interact with.
+      const gridColumns = [
+        document.getElementById("col-1"),
+        document.getElementById("col-2"),
+        document.getElementById("col-3"),
+      ];
+      const tabs = document.querySelectorAll(".tab-btn");
+      const body = document.body;
+      const heroImgLeft = document.getElementById("hero-img-left");
+      const heroImgRight = document.getElementById("hero-img-right");
+      const heroContainer = document.getElementById("hero-images-container");
+      const header = document.getElementById("header");
+      const footerImage = document.getElementById("footer-image");
+      const mobileMenu = document.getElementById("mobile-menu");
+      const hamburgerBtn = document.getElementById("hamburger-btn");
+      const hamburgerIcon = document.getElementById("hamburger-icon");
+      const closeIcon = document.getElementById("close-icon");
+
+      // Cookie Modal Elements
+      const cookieModal = document.getElementById("cookie-modal");
+      const cookieOverlay = document.getElementById("cookie-overlay");
+      const manageCookiesLink = document.getElementById("manage-cookies-link");
+      const closeCookieBtn = document.getElementById("close-cookie-btn");
+      const acceptCookiesBtn = document.getElementById("accept-cookies-btn");
+      const rejectCookiesBtn = document.getElementById("reject-cookies-btn");
+
+      // --- THEMES & CONFIG ---
+      // This object holds the configuration for each theme (colors and images).
+      const themes = {
+        all: {
+          bg: "theme-all",
+          color: "var(--theme-color-all)",
+          imgLeft: "images/all_1.png",
+          imgRight: "images/all_2.png",
+          footerImg: "images/all_3.png",
+        },
+        study: {
+          bg: "theme-study",
+          color: "var(--theme-color-study)",
+          imgLeft: "images/study_1.png",
+          imgRight: "images/study_2.png",
+          footerImg: "images/study_3.png",
+        },
+        career: {
+          bg: "theme-career",
+          color: "var(--theme-color-career)",
+          imgLeft: "images/career_1.png",
+          imgRight: "images/career_2.png",
+          footerImg: "images/career_3.png",
+        },
+        life: {
+          bg: "theme-life",
+          color: "var(--theme-color-life)",
+          imgLeft: "images/life_1.png",
+          imgRight: "images/life_2.png",
+          footerImg: "images/download.png",
+        },
+      };
+
+      // --- FUNCTIONS ---
+
+      /**
+       * Renders the prompt cards into a masonry-style grid.
+       * @param {string} category - The category of prompts to display ('all', 'study', 'career', 'life').
+       */
+      function renderPrompts(category) {
+        gridColumns.forEach((col) => (col.innerHTML = ""));
+
+        const filteredPrompts =
+          category === "all"
+            ? prompts
+            : prompts.filter((p) => p.category === category);
+
+        let delay = 0;
+        filteredPrompts.forEach((prompt, index) => {
+          const card = document.createElement("a");
+          card.href = "#"; // Make card clickable
+          card.className =
+            "prompt-card bg-white p-6 rounded-2xl cursor-pointer flex flex-col justify-between relative group opacity-0";
+          card.style.animation = `fadeIn 0.5s ease-in-out ${delay}s forwards`;
+
+          let attachmentsHTML = "";
+          if (prompt.attachments && prompt.attachments.length > 0) {
+            attachmentsHTML = `<div class="flex flex-wrap gap-2 mt-4">
+                        ${prompt.attachments
+                          .map(
+                            (att) => `
+                            <div class="flex items-center gap-2 rounded-lg border border-dashed border-gray-300 py-1 pl-2 pr-3 text-sm text-gray-600 bg-gray-50">
+                                <svg class="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 16 16"><path d="M4 0h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H4z"/><path d="M4.5 12.5a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5zm0-2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5zm0-2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5z"/></svg>
+                                <span>${att}</span>
+                            </div>
+                        `
+                          )
+                          .join("")}
+                    </div>`;
+          }
+
+          card.innerHTML = `
+                    <div>
+                        <h3 class="font-semibold text-lg mb-2 text-black">${prompt.title}</h3>
+                        <p class="text-gray-600 text-sm">${prompt.description}</p>
+                        ${attachmentsHTML}
+                    </div>
+                    <div class="absolute bottom-4 right-4 h-8 w-8 bg-black rounded-full flex items-center justify-center text-white hover-arrow">
+                         <svg width="1rem" height="1rem" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+                    </div>
+                `;
+          // Distribute cards into columns for masonry layout
+          const numColumns =
+            window.innerWidth >= 1024 ? 3 : window.innerWidth >= 768 ? 2 : 1;
+          gridColumns[index % numColumns].appendChild(card);
+
+          delay += 0.03;
+        });
+      }
+
+      /**
+       * Switches the color theme of the entire page.
+       * @param {string} category - The new theme category.
+       */
+      function switchTheme(category) {
+        const theme = themes[category];
+
+        body.className = body.className.replace(/theme-\w+/g, "");
+        body.classList.add(theme.bg);
+
+        mobileMenu.style.backgroundColor = theme.color;
+
+        updateHeaderScrollColor();
+
+        [heroImgLeft, heroImgRight, footerImage].forEach(
+          (img) => (img.style.opacity = 0)
+        );
+        setTimeout(() => {
+          heroImgLeft.src = theme.imgLeft;
+          heroImgRight.src = theme.imgRight;
+          footerImage.src = theme.footerImg;
+          [heroImgLeft, heroImgRight, footerImage].forEach(
+            (img) => (img.style.opacity = 1)
+          );
+        }, 300);
+
+        renderPrompts(category);
+      }
+
+      /**
+       * Updates the header's background color based on scroll position and current theme.
+       */
+      function updateHeaderScrollColor() {
+        const themeClass = Array.from(body.classList).find((c) =>
+          c.startsWith("theme-")
+        );
+        header.classList.remove(
+          "theme-all",
+          "theme-study",
+          "theme-career",
+          "theme-life"
+        );
+        if (window.scrollY > 10 && themeClass) {
+          header.classList.add(themeClass);
+        }
+      }
+
+      /**
+       * Toggles hero images visibility and re-calculates masonry columns based on screen size.
+       */
+      function handleResize() {
+        heroContainer.classList.toggle("hidden", window.innerWidth < 640);
+
+        const numColumns =
+          window.innerWidth >= 1024 ? 3 : window.innerWidth >= 768 ? 2 : 1;
+        gridColumns.forEach((col, i) => {
+          col.classList.toggle("hidden", i >= numColumns);
+        });
+
+        renderPrompts(
+          document.querySelector(".tab-btn.active").dataset.category
+        ); // Re-render prompts to adjust columns
+      }
+
+      /**
+       * Opens or closes the mobile menu overlay.
+       */
+      function toggleMobileMenu() {
+        const isOpen = body.classList.contains("menu-open");
+        body.classList.toggle("menu-open");
+
+        if (!isOpen) {
+          // Opening menu
+          const currentCategory =
+            document.querySelector(".tab-btn.active").dataset.category;
+          mobileMenu.style.backgroundColor = themes[currentCategory].color;
+          mobileMenu.classList.remove("opacity-0", "pointer-events-none");
+          hamburgerIcon.classList.add("hidden");
+          closeIcon.classList.remove("hidden");
+          hamburgerBtn.setAttribute("aria-label", "Close menu");
+        } else {
+          // Closing menu
+          mobileMenu.classList.add("opacity-0", "pointer-events-none");
+          hamburgerIcon.classList.remove("hidden");
+          closeIcon.classList.add("hidden");
+          hamburgerBtn.setAttribute("aria-label", "Open menu");
+        }
+      }
+
+      /**
+       * Opens and shows the cookie management modal.
+       */
+      function openCookieModal() {
+        cookieModal.classList.remove("hidden");
+        cookieOverlay.classList.remove("hidden");
+        setTimeout(() => {
+          cookieModal.classList.remove("opacity-0", "scale-95");
+        }, 10);
+      }
+
+      /**
+       * Closes the cookie management modal.
+       */
+      function closeCookieModal() {
+        cookieModal.classList.add("opacity-0", "scale-95");
+        setTimeout(() => {
+          cookieModal.classList.add("hidden");
+          cookieOverlay.classList.add("hidden");
+        }, 300);
+      }
+
+      /**
+       * Reads the URL hash and switches the theme and active tab accordingly.
+       */
+      function handleHashChange() {
+        const hash = window.location.hash.replace("#", "");
+        const validCategories = ["all", "study", "career", "life"];
+        const category = validCategories.includes(hash) ? hash : "all";
+
+        tabs.forEach((t) => {
+          t.classList.remove("active", "bg-gray-200", "text-black");
+          t.classList.add("text-gray-600");
+          if (t.dataset.category === category) {
+            t.classList.add("active", "bg-gray-200", "text-black");
+            t.classList.remove("text-gray-600");
+          }
+        });
+        switchTheme(category);
+      }
+
+      // --- EVENT LISTENERS ---
+      // This is the main entry point that runs when the page is loaded.
+      document.addEventListener("DOMContentLoaded", () => {
+        handleResize();
+        handleHashChange(); // Load content based on URL hash on initial load
+
+        // --- Global Event Listeners ---
+        window.addEventListener("scroll", () => {
+          header.classList.toggle("scrolled", window.scrollY > 10);
+          updateHeaderScrollColor();
+        });
+        window.addEventListener("resize", handleResize);
+        window.addEventListener("hashchange", handleHashChange);
+
+        // --- Mobile Menu Logic ---
+        hamburgerBtn.addEventListener("click", toggleMobileMenu);
+
+        // --- Tab/Theme Switching Logic ---
+        tabs.forEach((tab) => {
+          tab.addEventListener("click", (e) => {
+            // The hashchange event listener will handle the logic.
+            // This prevents running the switchTheme function twice.
+          });
+        });
+
+        // --- Cookie Modal Logic ---
+        manageCookiesLink.addEventListener("click", (e) => {
+          e.preventDefault();
+          openCookieModal();
+        });
+        closeCookieBtn.addEventListener("click", closeCookieModal);
+        acceptCookiesBtn.addEventListener("click", closeCookieModal);
+        rejectCookiesBtn.addEventListener("click", closeCookieModal);
+        cookieOverlay.addEventListener("click", closeCookieModal);
+      });
+    </script>
+  </body>
+</html>
