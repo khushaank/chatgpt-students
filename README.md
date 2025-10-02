@@ -1,45 +1,70 @@
-ChatGPT for Students - Prompt Showcase
-Author: Khushaank Gupta
+# 🌟 ChatGPT for Students - Prompt Showcase  
+**Author: Khushaank Gupta**
 
-Project Description
-This project is a single-page, fully responsive website designed to showcase 100 useful ChatGPT prompts for college students. The prompts are categorized into "Study," "Career," and "Life." The design is clean, modern, and interactive, inspired by the ChatGPT aesthetic and built to be easily deployable.
+---
 
-Key Features
-Dynamic Theme Switching: The color scheme and hero/footer images change based on the selected category (All, Study, Career, Life).
+## 📖 Project Description  
+This project is a **single-page, fully responsive website** designed to showcase **100 useful ChatGPT prompts for college students.**  
+The prompts are categorized into:  
 
-Fully Responsive Design: Adapts seamlessly from mobile to desktop screens.
+- ⭐ Study  
+- ⭐ Career  
+- ⭐ Life  
 
-Full-Screen Mobile Menu: An animated, full-screen overlay for navigation on smaller devices, with a circular hamburger button that transforms into a close icon.
+The design is **clean, modern, and interactive,** inspired by the ChatGPT aesthetic and built for **easy deployment.**
 
-Masonry Grid Layout: A dynamic masonry-style layout for the prompt cards that adjusts the number of columns based on screen size, creating a visually appealing "cluttered" look.
+---
 
-Interactive Prompt Cards: Cards feature a subtle zoom effect on hover, and an arrow icon appears to indicate interactivity.
+## ✨ Key Features  
+- 🌗 **Dynamic Theme Switching**  
+  Color scheme + hero/footer images change with category selection (All, Study, Career, Life).  
 
-URL Hash Navigation: The active category is reflected in the URL hash (e.g., index.html#study), allowing for direct linking to specific categories.
+- 📱 **Fully Responsive Design**  
+  Adapts seamlessly from mobile to desktop screens.  
 
-Modern UI/UX: Built with modern design principles, including smooth animations, modals, and a sticky navigation bar for filters.
+- 🍔 **Full-Screen Mobile Menu**  
+  Animated full-screen overlay navigation with a circular hamburger button that morphs into a close icon.  
 
-Self-Contained: All HTML, CSS (via Tailwind CSS), and JavaScript are contained within a single index.html file for simplicity and portability.
+- 🧩 **Masonry Grid Layout**  
+  Dynamic masonry-style layout for prompt cards with adjustable columns for different screen sizes.  
 
-Accessible: Uses rem units for scalable typography and layout.
+- 🎴 **Interactive Prompt Cards**  
+  Subtle zoom hover effect + arrow icon indicating interactivity.  
 
-Setup and Usage
-To run this project locally, follow these steps:
+- 🔗 **URL Hash Navigation**  
+  Active category reflected in URL hash (e.g., `index.html#study`) for direct linking.  
 
-Download the Code: Save the index.html file to your local machine.
+- 🎨 **Modern UI/UX**  
+  Smooth animations, modals, sticky filter navigation.  
 
-Create Image Directory: In the same directory where you saved index.html, create a folder named images.
+- 📦 **Self-Contained**  
+  Everything (HTML, Tailwind CSS, JS) in **one index.html file** for simplicity.  
 
-Add Assets: Place all the required image assets into the images folder. This includes:
+- ♿ **Accessible**  
+  Uses `rem` units for scalable typography and layout.  
 
-all_1.png, all_2.png, all_3.png
+---
 
-study_1.png, study_2.png, study_3.png
+## ⚙️ Setup and Usage  
+To run locally:  
 
-career_1.png, career_2.png, career_3.png
+1. **Download the Code**  
+   Save the `index.html` file to your local machine.  
 
-life_1.png, life_2.png, download.png
+2. **Create Image Directory**  
+   In the same folder, create a new directory called **`images/`**.  
 
-Open in Browser: Open the index.html file directly in any modern web browser (like Chrome, Firefox, or Edge). For the best experience, you can use a local server (e.g., VS Code's Live Server extension).
+3. **Add Assets**  
+   Place these image files inside the `images` folder:  
+   - `all_1.png`, `all_2.png`, `all_3.png`  
+   - `study_1.png`, `study_2.png`, `study_3.png`  
+   - `career_1.png`, `career_2.png`, `career_3.png`  
+   - `life_1.png`, `life_2.png`, `download.png`  
 
-This project was developed by Khushaank Gupta.
+4. **Open in Browser**  
+   Open `index.html` directly in a modern browser (**Chrome, Firefox, Edge**).  
+   For best experience, use a local server (e.g., **VS Code’s Live Server** extension).  
+
+---
+
+🚀 **This project was developed by Khushaank Gupta.**
