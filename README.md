@@ -2,7 +2,7 @@
 **Author: Khushaank Gupta**
 
 **Site-copied : https://chatgpt.com/use-cases/students#**
-
+**My-site : https://khushaank.github.io/chatgpt-students/**
 ---
 
 ## 📖 Project Description  
